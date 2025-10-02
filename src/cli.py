@@ -1,4 +1,5 @@
 # CLI handling logic for the application and entry point for user interaction.
+# Should probably create __main__.py after understanding it better.
 
 # /-- Program psuedocode --/
 # 1. Display welcome message, current date/time, and menu of options.
