@@ -1,6 +1,5 @@
 # Represents a note.
 from typing import Self
-import uuid
 
 class Note:
     def __init__(self, id, title, content, is_important) -> None:
