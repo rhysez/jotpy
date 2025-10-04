@@ -9,54 +9,6 @@ class Note:
         self.content = content
         self.is_important = is_important
 
-    def save(self, cursor) -> Self:
-        # Logic to save the note to DB.
-        try:
-            cursor.execute(
-                """
-                INSERT INTO notes (id, title, content, is_important) 
-                VALUES (?, ?, ?, ?)
-                """,
-                (self.id, self.title, self.content, self.is_important)
-            )
-            cursor.connection.commit()
-        except Exception as e:
-            print(f"Error saving note: {e}")
-
-        return self
-
-    # TODO: Implement method.
-    def update(self, cursor, title, content, is_important):
-        self.title = title
-        self.content = content
-        self.is_important = is_important
-        
-        try:
-            cursor.execute(
-                """
-                UPDATE notes
-                SET title = ?, content = ?, is_important = ?
-                WHERE id = ?
-                """,
-                (self.title, self.content, self.is_important, self.id)
-            )
-            cursor.connection.commit()
-        except Exception as e:
-            print(f"Error updating note: {e}")
-
-        return self
-
-    # TODO: Implement method.
-    def delete(self, cursor):
-        try:
-            cursor.execute(
-                "DELETE FROM notes WHERE id = ?",
-                (self.id,)
-            )
-            cursor.connection.commit()
-        except Exception as e:
-            print(f"Error deleting note: {e}")
-
     @staticmethod
     def list(cursor) -> list[Self]:
         try:
@@ -81,3 +33,48 @@ class Note:
         except Exception as e:
             print(f"Error fetching note: {e}")
             return None
+
+    def save(self, cursor) -> Self:
+        try:
+            cursor.execute(
+                """
+                INSERT INTO notes (id, title, content, is_important) 
+                VALUES (?, ?, ?, ?)
+                """,
+                (self.id, self.title, self.content, self.is_important)
+            )
+            cursor.connection.commit()
+        except Exception as e:
+            print(f"Error saving note: {e}")
+
+        return self
+
+    def update(self, cursor, title, content, is_important):
+        self.title = title
+        self.content = content
+        self.is_important = is_important
+        
+        try:
+            cursor.execute(
+                """
+                UPDATE notes
+                SET title = ?, content = ?, is_important = ?
+                WHERE id = ?
+                """,
+                (self.title, self.content, self.is_important, self.id)
+            )
+            cursor.connection.commit()
+        except Exception as e:
+            print(f"Error updating note: {e}")
+
+        return self
+
+    def delete(self, cursor):
+        try:
+            cursor.execute(
+                "DELETE FROM notes WHERE id = ?",
+                (self.id,)
+            )
+            cursor.connection.commit()
+        except Exception as e:
+            print(f"Error deleting note: {e}")

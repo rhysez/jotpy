@@ -33,7 +33,7 @@ def run_session(session: bool, cursor: sqlite3.Cursor) -> None:
     while session:
         user_response = eval_menu_input()
         process = Process(user_response) if user_response in [p.value for p in Process] else None
-        if process in ["5", "exit", "quit"] or process is None:
+        if process in ["6", "exit", "quit"] or process is None:
             session = False
             print("Exiting JotPy. Goodbye!")
         else:
@@ -110,6 +110,20 @@ def process_delete(cursor: sqlite3.Cursor) -> None:
 
     display_menu_options()
 
+def process_delete_all(cursor: sqlite3.Cursor) -> None:
+    confirmation = input("Are you sure you want to delete all notes? This action cannot be undone. (y/n): ").lower()
+    if confirmation in ["y", "yes"]:
+        try:
+            cursor.execute("DELETE FROM notes")
+            cursor.connection.commit()
+            print("All notes have been deleted.")
+        except Exception as e:
+            print(f"Error deleting all notes: {e}")
+    else:
+        print("Delete all notes operation cancelled.")
+
+    display_menu_options()
+
 # Maps user input to processing functions.
 # Uses the Process enum for clarity.
 process_map = {
@@ -117,4 +131,5 @@ process_map = {
     Process.VIEW: process_view,
     Process.UPDATE: process_update,
     Process.DELETE: process_delete,
+    Process.DELETE_ALL: process_delete_all
 }

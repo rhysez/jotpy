@@ -6,3 +6,4 @@ class Process(Enum):
     VIEW = "2"
     UPDATE = "3"
     DELETE = "4"
+    DELETE_ALL = "5"
