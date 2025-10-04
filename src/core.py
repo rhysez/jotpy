@@ -6,13 +6,11 @@ from classes.process import Process
 from utils.menu import eval_menu_input
 from utils.menu import display_menu_options
 
-
 # Program entry point.
 # Handles database connection and bootstrapping if necessary.
 def main() -> int:
     session = True
     db = db_connect()
-    connection = db[0]
     cursor = db[1]
 
     print("Initializing database...")
