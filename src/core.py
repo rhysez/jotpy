@@ -10,8 +10,8 @@ from utils.menu import display_menu_options
 # Handles database connection and bootstrapping if necessary.
 def main() -> int:
     session = True
-    db = db_connect()
-    cursor = db[1]
+    DB = db_connect()
+    cursor = DB[1]
 
     print("Initializing database...")
     try:
@@ -44,9 +44,9 @@ def run_session(session: bool, cursor: sqlite3.Cursor) -> None:
 
 def db_connect():
     try:
-        connection = sqlite3.connect("jotpy.db")
-        cursor = connection.cursor()
-        return connection, cursor
+        CONNECTION = sqlite3.connect("jotpy.db")
+        CURSOR = CONNECTION.cursor()
+        return CONNECTION, CURSOR
     except sqlite3.Error as e:
         print(f"Database connection error: {e}")
         return None, None
