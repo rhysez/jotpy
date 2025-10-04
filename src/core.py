@@ -1,11 +1,14 @@
 import uuid
-from classes.note import Note
-from utils.input import eval_user_input
-from utils.menu import display_menu_options
 import datetime
 import sqlite3
+from classes.note import Note
+from classes.process import Process
+from utils.menu import eval_menu_input
+from utils.menu import display_menu_options
+
 
 # Program entry point.
+# Handles database connection and bootstrapping if necessary.
 def main() -> int:
     session = True
     db = db_connect()
@@ -27,15 +30,17 @@ def main() -> int:
     
     return 0
 
+# The main application loop where user requests are processed.
 def run_session(session: bool, cursor: sqlite3.Cursor) -> None:
     while session:
-        user_response = eval_user_input()
-        if user_response in ["5", "exit", "quit"] or user_response is None:
+        user_response = eval_menu_input()
+        process = Process(user_response) if user_response in [p.value for p in Process] else None
+        if process in ["5", "exit", "quit"] or process is None:
             session = False
             print("Exiting JotPy. Goodbye!")
         else:
             try:
-                process_map[user_response](cursor)
+                process_map[process](cursor)
             except KeyError:
                 print("Invalid option. Please try again.")
 
@@ -72,7 +77,46 @@ def process_view(cursor: sqlite3.Cursor) -> None:
 
     display_menu_options()
 
+def process_update(cursor: sqlite3.Cursor) -> None:
+    note_id = input("Enter the ID of the note to update: ")
+
+    # We're checking if the note exists before attempting to update.
+    note = Note.get(cursor, note_id)
+    if not note:
+        print("Error: Could not find a note with this ID.")
+        display_menu_options()
+        return
+
+    title = input("Enter new note title: ")
+    content = input("Enter new note content: ")
+    is_important = input("Is this note important? (y/n): ").lower()
+    is_important = is_important in ["y", "yes"]
+
+    note.update(cursor, title, content, is_important)
+    print(f"Successfully updated note '{note.title}'.")
+
+    display_menu_options()
+
+def process_delete(cursor: sqlite3.Cursor) -> None:
+    note_id = input("Enter the ID of the note to delete: ")
+
+    # We're checking if the note exists before attempting to delete.
+    note = Note.get(cursor, note_id)
+    if not note:
+        print("Error: Could not find a note with this ID.")
+        display_menu_options()
+        return
+
+    note.delete(cursor)
+    print(f"Successfully deleted note '{note.title}'.")
+
+    display_menu_options()
+
+# Maps user input to processing functions.
+# Uses the Process enum for clarity.
 process_map = {
-    "1": process_create,
-    "2": process_view,
+    Process.CREATE: process_create,
+    Process.VIEW: process_view,
+    Process.UPDATE: process_update,
+    Process.DELETE: process_delete,
 }

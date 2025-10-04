@@ -1,3 +1,5 @@
+from classes.process import Process
+
 def display_menu_options() -> None:
     print("Menu Options:")
     print("1. Create Note")
@@ -6,5 +8,10 @@ def display_menu_options() -> None:
     print("4. Delete Note")
     print("5. Exit")
 
-def get_user_input(prompt: str) -> str:
-    return input(prompt)
+def eval_menu_input() -> str | None:
+    try:
+        line = input("JotPy> ")
+        return line
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
